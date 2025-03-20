@@ -1,9 +1,11 @@
 package org.darktech.service;
 
-import jakarta.persistence.EntityNotFoundException;
+import org.darktech.dto.UserDTO;
 import org.darktech.entity.User;
+import org.darktech.exception.ResourceNotFoundException;
 import org.darktech.exception.UserNotFoundException;
 import org.darktech.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,29 +13,52 @@ public class UserService {
 
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
+        this.passwordEncoder =passwordEncoder;
     }
 
+
+
     public User saveUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
         return savedUser;
     }
 
-    public User getUser(Long id) {
+    public UserDTO userLogin(String email, String password){
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("Invalid Email or Password"));
+
+        if(!user.isActive()){
+            throw new ResourceNotFoundException("User is inactive. Please contact Admin");
+        }
+
+        if(passwordEncoder.matches(password,user.getPassword())){
+            return new UserDTO(user.getFirstName(),user.getLastName(),user.getEmail());
+        }
+        throw new ResourceNotFoundException("Invalid Password, Try Again");
+    }
+
+    public UserDTO getUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User not found with Id: "+ id));
         if(!user.isActive()){
             throw new UserNotFoundException("User Id " + id +" is Deactivated Reach to admin for activation");
 
         }
-        return user;
+
+        UserDTO userDTO = new UserDTO(user.getFirstName(), user.getLastName(), user.getEmail());
+        return userDTO;
     }
 
-    public User updateUser(Long id, User updatedUser){
+    public String updateUser(Long id, User updatedUser){
 
-        User existingUser = userRepository.findById(id).get();
+        User existingUser = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User not found with Id: "+ id));
 
+        if(!existingUser.isActive()){
+            throw new UserNotFoundException("User Id: "+ id+ " is Deactivated reach to admin for activation");
+        }
         if(updatedUser.getFirstName()!=null && !updatedUser.getFirstName().isEmpty())
         {
             existingUser.setFirstName(updatedUser.getFirstName());
@@ -42,20 +67,22 @@ public class UserService {
             existingUser.setLastName(updatedUser.getLastName());
         }
         if(updatedUser.getPassword()!=null && !updatedUser.getPassword().isEmpty()){
-            existingUser.setPassword(updatedUser.getPassword());
+            existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         }
-        return userRepository.save(existingUser);
+        userRepository.save(existingUser);
+        return "User updated successfully";
     }
 
-    public String deactivateUser(Long id){
-        User user = userRepository.findById(id).get();
-        if(user.isActive()==true){
+    public String deactivateUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User Id not found"));
+        if (user.isActive()) {
             boolean active = false;
             user.setActive(active);
+            userRepository.save(user);
+
+            return "User deactivated successfully. Reach out to admin for activation.";
+        } else {
+            return "User is already deactivated. Please contact admin for reactivation if needed.";
         }
-        userRepository.save(user);
-        return "Reach to admin for activation";
     }
-
-
 }

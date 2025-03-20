@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class User {
 
     @Id
@@ -98,7 +98,8 @@ public class User {
         return registeredAt;
     }
 
-    public void setRegisteredAt(LocalDateTime registeredAt) {
-        this.registeredAt = registeredAt;
+    @PrePersist
+    protected void onCreate() {
+        this.registeredAt = LocalDateTime.now();
     }
 }
