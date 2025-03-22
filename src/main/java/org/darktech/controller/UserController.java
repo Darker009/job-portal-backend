@@ -31,20 +31,21 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService){
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @PostMapping("/register")
-    public User saveUser(@RequestBody User user){
-
-        User savedUser = userService.saveUser(user);
-        return savedUser;
+    public User saveUser(@RequestBody User user) {
+        // Validate role
+        if (!user.getRole().equals("Candidate") && !user.getRole().equals("Employee")) {
+            throw new ResourceNotFoundException("Invalid role. Role must be either 'Candidate' or 'Employee'.");
+        }
+        return userService.saveUser(user);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> userLogin(@RequestBody User user) {
-
         if (user.getEmail() == null || user.getPassword() == null) {
             return ResponseEntity.badRequest().body(Map.of("message", "Email and Password are required!"));
         }
@@ -67,23 +68,23 @@ public class UserController {
     }
 
     @GetMapping("/fetch/{id}")
-    public ResponseEntity<?> getUser(@PathVariable Long id){
-        if(id==null || id==0){
+    public ResponseEntity<?> getUser(@PathVariable Long id) {
+        if (id == null || id == 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Provide valid user Id");
         }
-        UserDTO userDTO =userService.getUser(id);
-        return  ResponseEntity.status(HttpStatus.OK).body(Map.of("UserData",userDTO));
+        UserDTO userDTO = userService.getUser(id);
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("UserData", userDTO));
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user){
-        if (id==0 && id==null){
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) {
+        if (id == 0 || id == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user ID");
         }
-       String message = userService.updateUser(id, user) ;
-       if(message.contains("successfully")){
-           return ResponseEntity.status(HttpStatus.CREATED).body("User updated successfully");
-       }
+        String message = userService.updateUser(id, user);
+        if (message.contains("successfully")) {
+            return ResponseEntity.status(HttpStatus.CREATED).body("User updated successfully");
+        }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User update failed");
     }
 
@@ -94,9 +95,4 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(userService.deactivateUser(id));
     }
-
-
-
-
-
 }

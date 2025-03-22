@@ -13,7 +13,6 @@ import java.util.Map;
 
 @Component
 public class JwtUtils {
-    // Base64-encoded key (ensure it is 256-bit for HS256)
     private static final String SECRET_KEY = "VGFrK0hhdl51dkNIRUZzRVZmeXBXIzdnOV5rKlo4JFY=";
 
     private SecretKey getSignInKey() {
@@ -44,12 +43,12 @@ public class JwtUtils {
         return createToken(claims, username);
     }
 
-    private String createToken(Map<String, Object> claims, String subject) {
+    private String createToken(Map<String, Object> claims, String string) {
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(subject)  // subject is the username
+                .setSubject(string)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 5)) // 5-minute expiry
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .signWith(getSignInKey())
                 .compact();
     }

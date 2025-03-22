@@ -23,29 +23,32 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "role", nullable = false)
+    private String role; // New field for role
+
     @Column(name = "active", nullable = false)
     private boolean active = true;
 
     @Column(name = "date_time", nullable = false, updatable = false)
     private LocalDateTime registeredAt;
 
-    // Default constructor that sets registeredAt automatically
+    // Default constructor
     public User() {
         this.registeredAt = LocalDateTime.now();
     }
 
     // Constructor with parameters
-    public User(String firstName, String lastName, String email, String password) {
+    public User(String firstName, String lastName, String email, String password, String role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.role = role;
         this.active = true;
         this.registeredAt = LocalDateTime.now();
     }
 
     // Getters and Setters
-
     public Long getId() {
         return id;
     }
@@ -84,6 +87,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public boolean isActive() {
