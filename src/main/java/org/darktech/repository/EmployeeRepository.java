@@ -1,13 +1,12 @@
 package org.darktech.repository;
 
-import org.darktech.entity.User;
+import org.darktech.entity.EmployeeProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(String email);
+public interface EmployeeRepository extends JpaRepository<EmployeeProfile, Long> {
+    Optional<EmployeeProfile> findByUser_Id(Long userId);
 }
-

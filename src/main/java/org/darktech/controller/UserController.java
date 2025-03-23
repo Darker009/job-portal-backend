@@ -36,12 +36,21 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public User saveUser(@RequestBody User user) {
-        // Validate role
+    public ResponseEntity<?> saveUser(@RequestBody User user) {
+
         if (!user.getRole().equals("Candidate") && !user.getRole().equals("Employee")) {
-            throw new ResourceNotFoundException("Invalid role. Role must be either 'Candidate' or 'Employee'.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid role. Role must be either 'Candidate' or 'Employee'.");
         }
-        return userService.saveUser(user);
+
+        if (!user.isActive()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is inactive please contact to admin.");
+        }
+
+        if (!user.getRole().equals("Candidate") && !user.getRole().equals("Employee")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid role. Role must be either 'Candidate' or 'Employee'.");
+        }
+        userService.saveUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully");
     }
 
     @PostMapping("/login")
