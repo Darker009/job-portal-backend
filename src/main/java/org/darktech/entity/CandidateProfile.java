@@ -12,29 +12,30 @@ public class CandidateProfile {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
     private User user;
 
     private String collegeName;
-
-    // Removed the ManyToOne association and replaced it with a simple String field for degree.
     private String degree;
-
-    // Removed the ManyToOne association and replaced it with a simple String field for specialization.
     private String specialization;
-
     private Long contactNumber;
     private String skills;
     private Date dob;
     private String address;
     private String currentLocation;
+
+    // Storing only file paths (not file content)
+    @Column(nullable = true)
     private String resumeUrl;
+
+    @Column(nullable = true)
+    private String profilePicture;
 
     public CandidateProfile() {}
 
     public CandidateProfile(User user, String collegeName, String degree, String specialization,
                             Long contactNumber, String skills, Date dob, String address,
-                            String currentLocation, String resumeUrl) {
+                            String currentLocation, String resumeUrl, String profilePicture) {
         this.user = user;
         this.collegeName = collegeName;
         this.degree = degree;
@@ -45,7 +46,10 @@ public class CandidateProfile {
         this.address = address;
         this.currentLocation = currentLocation;
         this.resumeUrl = resumeUrl;
+        this.profilePicture = profilePicture;
     }
+
+    // Getters and setters
 
     public Long getId() {
         return id;
@@ -133,5 +137,13 @@ public class CandidateProfile {
 
     public void setResumeUrl(String resumeUrl) {
         this.resumeUrl = resumeUrl;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }
