@@ -2,6 +2,7 @@ package org.darktech.service;
 
 import org.darktech.entity.CandidateProfile;
 import org.darktech.entity.User;
+import org.darktech.exception.ResourceNotFoundException;
 import org.darktech.repository.CandidateRepository;
 import org.darktech.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -26,11 +27,9 @@ public class CandidateService {
             throw new IllegalArgumentException("User ID is required");
         }
 
-        // Validate the user exists
         User user = userRepository.findById(candidateProfile.getUser().getId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        // If a candidate profile already exists, update its fields; otherwise, create a new one.
         Optional<CandidateProfile> existingProfileOpt = candidateRepository.findByUser_Id(user.getId());
         CandidateProfile profileToSave;
         if (existingProfileOpt.isPresent()) {

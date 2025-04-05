@@ -32,12 +32,11 @@ public class User {
     @Column(name = "date_time", nullable = false, updatable = false)
     private LocalDateTime registeredAt;
 
-    // Default constructor
+
     public User() {
         this.registeredAt = LocalDateTime.now();
     }
 
-    // Constructor with parameters
     public User(String firstName, String lastName, String email, String password, String role) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -48,7 +47,6 @@ public class User {
         this.registeredAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

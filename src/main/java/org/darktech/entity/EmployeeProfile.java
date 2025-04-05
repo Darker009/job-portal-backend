@@ -12,24 +12,44 @@ public class EmployeeProfile {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
     private User user;
 
     private String companyName;
-    private Date dob;
     private String designation;
+    private Long workExperience;
     private Long contactNumber;
+    private Date dob;
+    private String address;
+    private String currentLocation;
+
+    @Column(nullable = false)
+    private String expUrl;
+
+    @Column(nullable = true)
     private String profilePicture;
 
     public EmployeeProfile() {}
 
-    public EmployeeProfile(User user, String companyName, Date dob, String designation, Long contactNumber, String profilePicture) {
+    public EmployeeProfile(User user, String companyName, String designation, Long workExperience, Long contactNumber, Date dob, String address, String currentLocation, String expUrl, String profilePicture) {
         this.user = user;
         this.companyName = companyName;
-        this.dob = dob;
         this.designation = designation;
+        this.workExperience = workExperience;
         this.contactNumber = contactNumber;
+        this.dob = dob;
+        this.address = address;
+        this.currentLocation = currentLocation;
+        this.expUrl = expUrl;
         this.profilePicture = profilePicture;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
     public Long getId() {
@@ -48,12 +68,28 @@ public class EmployeeProfile {
         this.user = user;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getDesignation() {
+        return designation;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
+    public Long getWorkExperience() {
+        return workExperience;
+    }
+
+    public void setWorkExperience(Long workExperience) {
+        this.workExperience = workExperience;
+    }
+
+    public Long getContactNumber() {
+        return contactNumber;
+    }
+
+    public void setContactNumber(Long contactNumber) {
+        this.contactNumber = contactNumber;
     }
 
     public Date getDob() {
@@ -64,20 +100,28 @@ public class EmployeeProfile {
         this.dob = dob;
     }
 
-    public String getDesignation() {
-        return designation;
+    public String getAddress() {
+        return address;
     }
 
-    public void setDesignation(String designation) {
-        this.designation = designation;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public Long getContactNumber() {
-        return contactNumber;
+    public String getCurrentLocation() {
+        return currentLocation;
     }
 
-    public void setContactNumber(Long contactNumber) {
-        this.contactNumber = contactNumber;
+    public void setCurrentLocation(String currentLocation) {
+        this.currentLocation = currentLocation;
+    }
+
+    public String getExpUrl() {
+        return expUrl;
+    }
+
+    public void setExpUrl(String expUrl) {
+        this.expUrl = expUrl;
     }
 
     public String getProfilePicture() {

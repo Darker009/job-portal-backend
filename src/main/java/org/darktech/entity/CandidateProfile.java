@@ -24,7 +24,6 @@ public class CandidateProfile {
     private String address;
     private String currentLocation;
 
-    // Storing only file paths (not file content)
     @Column(nullable = true)
     private String resumeUrl;
 
@@ -49,7 +48,7 @@ public class CandidateProfile {
         this.profilePicture = profilePicture;
     }
 
-    // Getters and setters
+
 
     public Long getId() {
         return id;
@@ -139,11 +138,11 @@ public class CandidateProfile {
         this.resumeUrl = resumeUrl;
     }
 
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
     }
 }
